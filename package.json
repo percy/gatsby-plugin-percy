@@ -1,0 +1,29 @@
+{
+  "name": "gatsby-plugin-percy",
+  "version": "0.1.0",
+  "description": "A Gatsby plugin for automatically taking Percy snapshots after a build.",
+  "repository": "github:percy/gatsby-plugin-percy",
+  "author": "Perceptual Inc.",
+  "license": "MIT",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "percy",
+    "visual",
+    "screenshot"
+  ],
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "dependencies": {
+    "unist-util-visit": "^1.4.0"
+  },
+  "peerDependencies": {
+    "@percy/agent": "^0.20.0"
+  },
+  "devDependencies": {
+    "expect": "^25.1.0",
+    "mocha": "^7.0.0",
+    "mock-require": "^3.0.0"
+  }
+}
