@@ -1,6 +1,6 @@
 {
   "name": "gatsby-plugin-percy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Gatsby plugin for automatically taking Percy snapshots after a build.",
   "repository": "github:percy/gatsby-plugin-percy",
   "author": "Perceptual Inc.",
