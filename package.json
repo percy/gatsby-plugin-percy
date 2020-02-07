@@ -16,6 +16,7 @@
     "test": "mocha test.js"
   },
   "dependencies": {
+    "which": "^2.0.2"
   },
   "peerDependencies": {
     "@percy/agent": "^0.20.0"
