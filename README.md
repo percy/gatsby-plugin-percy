@@ -21,9 +21,10 @@ module.exports = {
     {
       resolve: `gatsby-plugin-percy`,
       options: {
-        files: [`dir/*.html`],
-        ignore: [`ignore/*.html*`],
-        config: `config/.percy.yaml`,
+        // example options:
+        // files: [`dir/*.html`],
+        // ignore: [`ignore/*.html`],
+        // config: `config/.percy.yaml`,
       },
     },
   ],
