@@ -16,7 +16,6 @@
     "test": "mocha test.js"
   },
   "dependencies": {
-    "unist-util-visit": "^1.4.0"
   },
   "peerDependencies": {
     "@percy/agent": "^0.20.0"
