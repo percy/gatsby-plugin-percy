@@ -7,7 +7,7 @@ exports.onPostBuild = ({ store }, { files, ignore, config }) => {
   let { program: { useYarn, directory } } = store.getState()
 
   let manager = which.sync(useYarn ? 'yarn' : 'npm')
-  let cmd = [manager, 'percy', 'snapshot', path.resolve(directory, 'public')]
+  let cmd = [manager, 'run', 'percy', 'snapshot', path.resolve(directory, 'public')]
 
   if (files) {
     cmd = cmd.concat('--snapshot-files', [].concat(files).join(','))
