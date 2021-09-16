@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
+    "pretest": "node --require @percy/core/post-install",
     "test": "cross-env NODE_ENV=test jasmine --config=test/jasmine.json",
     "test:coverage": "nyc yarn test"
   },
