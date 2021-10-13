@@ -91,3 +91,39 @@ module.exports = {
   }]
 }
 ```
+
+## Upgrading
+
+Versions of this plugin prior to `1.0` depended on and invoked the `snapshot` command from the now
+deprecated `@percy/agent` package. The new [`@percy/cli`](https://github.com/percy/cli), the core
+for all Percy SDKs, must now be installed explicitly. The new plugin no longer invokes any commands
+automatically, but will detect if the CLI is running and send pages to it for snapshotting.
+
+After upgrading this plugin, install `@percy/cli`:
+
+``` sh-session
+$ npm install --save-dev @percy/cli
+```
+See [usage](#usage) above for running with Percy.
+
+### Migrating Options
+
+All previous plugin options were provided to the `snapshot` command as flags. These options have now
+been removed. If using any of the previous plugin options, replace them with the below alternatives:
+
+- `config` - Use the CLI `--config` flag instead (`percy exec --config ... -- gatsby build`)
+- `files` - Use the [`include` static option](https://docs.percy.io/docs/cli-snapshot#static-options)
+  (can be provided as a plugin option)
+- `ignore` - Use the [`exclude` static option](https://docs.percy.io/docs/cli-snapshot#static-options)
+  (can be provided as a plugin option)
+
+See [options](#options) above for all accepted options.
+
+### Migrating Config
+
+If you have a previous Percy configuration file, migrate it to the newest version with the
+[`config:migrate`](https://github.com/percy/cli/tree/master/packages/cli-config#percy-configmigrate-filepath-output) command:
+
+```sh-session
+$ percy config:migrate
+```
