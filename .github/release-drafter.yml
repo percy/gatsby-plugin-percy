@@ -26,4 +26,3 @@ version-resolver:
       - ✨ enhancement
   default: patch
 template: '$CHANGES'
-prerelease: true
