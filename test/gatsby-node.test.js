@@ -1,14 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
-const helpers = require('@percy/sdk-utils/test/helpers');
 const plugin = require('../gatsby-node');
 
-describe('Gatsby Plugin - Percy', () => {
-  let activity, reporter, graphql, store;
+fdescribe('Gatsby Plugin - Percy', () => {
+  let activity, reporter, graphql, store, request;
+  const addr = 'http://localhost:5338';
+  const get = p => request(`${addr}${p}`);
+  const post = (p, body) => request(`${addr}${p}`, { method: 'post', body });
 
-  let directory = path.join(__dirname, '.tmp');
-  beforeEach(() => fs.mkdirSync(directory));
+  let directory = path.join(__dirname, '.tmp/public');
+  beforeAll(async () => ({ request } = await import('@percy/client/utils')));
+  beforeEach(() => fs.mkdirSync(directory, { recursive: true }));
   afterEach(done => rimraf(directory, () => done()));
 
   function run(options = {}) {
@@ -16,8 +19,6 @@ describe('Gatsby Plugin - Percy', () => {
   }
 
   beforeEach(async () => {
-    await helpers.setup();
-
     activity = {
       start: jasmine.createSpy('activity.start'),
       setStatus: jasmine.createSpy('activity.setStatus'),
@@ -35,13 +36,14 @@ describe('Gatsby Plugin - Percy', () => {
 
     store = {
       getState: jasmine.createSpy('store.getState')
-        .and.returnValue({ program: { directory } })
+        .and.returnValue({ program: { directory: path.join(__dirname, '.tmp') } })
     };
+
+    await post('/test/api/reset');
   });
 
-  it('does nothing when the healthcheck fails', async () => {
-    await helpers.testFailure('/percy/healthcheck');
-
+  xit('does nothing when the healthcheck fails', async () => {
+    await post('/test/api/disconnect', '/percy/healthcheck');
     await run();
 
     expect(reporter.activityTimer).toHaveBeenCalledWith('Percy');
@@ -50,38 +52,13 @@ describe('Gatsby Plugin - Percy', () => {
     expect(graphql).not.toHaveBeenCalled();
   });
 
-  it('serves pages and posts snapshots to the local percy server', async () => {
-    let nodes = ['/test-a/', '/test-b/', '/test-c/'].map(path => ({ path }));
-    graphql.and.resolveTo({ data: { allSitePage: { nodes } } });
+  it('throws an error when a bad query is passed', async () => {
+    graphql.and.resolveTo({ data: { allOtherPage: { nodes: [{ uri: '/test' }] } } });
     await run();
 
-    expect(reporter.activityTimer).toHaveBeenCalledWith('Percy');
-    expect(activity.setStatus).toHaveBeenCalledWith('Fetching config...');
-    expect(activity.setStatus).toHaveBeenCalledWith('Serving build output...');
-    expect(activity.setStatus).toHaveBeenCalledWith('Querying pages...');
-    expect(activity.setStatus).toHaveBeenCalledWith('Taking snapshots...');
-    expect(activity.setStatus).toHaveBeenCalledWith('Done');
+    expect(reporter.error).toHaveBeenCalledWith('Error taking snapshots:\n', (
+      jasmine.objectContaining({ message: 'Could not find query data at `allSitePage.nodes`. Fix the custom `query` or provide a custom `resolvePages` function.' })));
     expect(activity.end).toHaveBeenCalled();
-    expect(graphql).toHaveBeenCalled();
-
-    await expectAsync(helpers.getRequests()).toBeResolvedTo([
-      ['/percy/healthcheck'],
-      ['/percy/config', {
-        clientInfo: jasmine.stringMatching(/gatsby-plugin-percy\/.+/),
-        environmentInfo: jasmine.stringMatching(/gatsby\/.+/),
-        static: {}
-      }],
-      ['/percy/snapshot?async=true', [{
-        name: '/test-a/',
-        url: jasmine.stringMatching('localhost:(.*?)/test-a/')
-      }, {
-        name: '/test-b/',
-        url: jasmine.stringMatching('localhost:(.*?)/test-b/')
-      }, {
-        name: '/test-c/',
-        url: jasmine.stringMatching('localhost:(.*?)/test-c/')
-      }]]
-    ]);
   });
 
   it('can provide a custom graphql query to retrieve pages', async () => {
@@ -89,54 +66,44 @@ describe('Gatsby Plugin - Percy', () => {
     let resolvePages = data => data.allOtherPage.nodes.map(({ uri }) => uri);
     await run({ resolvePages });
 
-    await expectAsync(helpers.getRequests()).toBeResolvedTo(
-      jasmine.arrayContaining([['/percy/snapshot?async=true', [{
-        name: '/test-other/',
-        url: jasmine.stringMatching('localhost:(.*?)/test-other/')
-      }]]])
-    );
+    expect(activity.setStatus).toHaveBeenCalledWith('Querying pages...');
+    expect(activity.setStatus).toHaveBeenCalledWith('Taking snapshots...');
+    expect(activity.setStatus).toHaveBeenCalledWith('Done');
+    expect(activity.end).toHaveBeenCalled();
+    expect(graphql).toHaveBeenCalled();
+
+    let { logs } = await get('/test/logs');
+
+    expect(logs).toEqual(jasmine.arrayContaining([
+      jasmine.objectContaining({ message: 'Snapshot found: /test-other/' })
+    ]));
   });
 
-  it('errors when there are no pages to snapshot', async () => {
+  it('errors when there are no snapshots to capture', async () => {
     await run();
 
-    expect(activity.setStatus).toHaveBeenCalledWith('Taking snapshots...');
     expect(reporter.error).toHaveBeenCalledWith('Error taking snapshots:\n', (
       jasmine.objectContaining({ message: 'No snapshots found' })));
     expect(activity.end).toHaveBeenCalled();
   });
 
-  it('errors when the graphql query errors', async () => {
-    let err = new Error('test');
-    graphql.and.resolveTo({ errors: [err] });
+  it('takes snapshots of pages', async () => {
+    let nodes = ['/test-a/', '/test-b/', '/test-c/'].map(path => ({ path }));
+    graphql.and.resolveTo({ data: { allSitePage: { nodes } } });
     await run();
 
-    expect(graphql).toHaveBeenCalled();
     expect(activity.setStatus).toHaveBeenCalledWith('Querying pages...');
-    expect(reporter.error).toHaveBeenCalledWith('Error querying pages:\n', [err]);
-    expect(activity.setStatus).not.toHaveBeenCalledWith('Taking snapshots...');
+    expect(activity.setStatus).toHaveBeenCalledWith('Taking snapshots...');
+    expect(activity.setStatus).toHaveBeenCalledWith('Done');
     expect(activity.end).toHaveBeenCalled();
-  });
+    expect(graphql).toHaveBeenCalled();
 
-  it('errors when a custom graphql query is not an expected format', async () => {
-    graphql.and.resolveTo({ data: { allOtherPage: { nodes: [{ uri: '/test' }] } } });
-    await run();
+    let { logs } = await get('/test/logs');
 
-    let expectedMessage = 'Could not find query data at `allSitePage.nodes`. ' +
-      'Fix the custom `query` or provide a custom `resolvePages` function.';
-
-    expect(reporter.error).toHaveBeenCalledWith('Error querying pages:\n', (
-      jasmine.objectContaining({ message: expectedMessage })));
-  });
-
-  it('handles unexpected errors', async () => {
-    let err = new Error('test');
-    store.getState.and.throwError(err);
-    await run();
-
-    expect(graphql).not.toHaveBeenCalled();
-    expect(activity.setStatus).toHaveBeenCalledWith('Serving build output...');
-    expect(reporter.error).toHaveBeenCalledWith('Error serving build output:\n', err);
-    expect(activity.end).toHaveBeenCalled();
+    expect(logs).toEqual(jasmine.arrayContaining([
+      jasmine.objectContaining({ message: 'Snapshot found: /test-a/' }),
+      jasmine.objectContaining({ message: 'Snapshot found: /test-b/' }),
+      jasmine.objectContaining({ message: 'Snapshot found: /test-c/' })
+    ]));
   });
 });
