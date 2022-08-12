@@ -3,22 +3,19 @@ const path = require('path');
 const rimraf = require('rimraf');
 const plugin = require('../gatsby-node');
 
-fdescribe('Gatsby Plugin - Percy', () => {
-  let activity, reporter, graphql, store, request;
-  const addr = 'http://localhost:5338';
-  const get = p => request(`${addr}${p}`);
-  const post = (p, body) => request(`${addr}${p}`, { method: 'post', body });
-
+describe('Gatsby Plugin - Percy', () => {
+  let activity, reporter, graphql, store, helpers;
   let directory = path.join(__dirname, '.tmp/public');
-  beforeAll(async () => ({ request } = await import('@percy/client/utils')));
-  beforeEach(() => fs.mkdirSync(directory, { recursive: true }));
-  afterEach(done => rimraf(directory, () => done()));
 
   function run(options = {}) {
     return plugin.onPostBuild({ reporter, graphql, store }, options);
   }
 
+  beforeAll(async () => ({ default: helpers } = await import('@percy/sdk-utils/test/helpers')));
   beforeEach(async () => {
+    await helpers.setupTest();
+    fs.mkdirSync(directory, { recursive: true });
+
     activity = {
       start: jasmine.createSpy('activity.start'),
       setStatus: jasmine.createSpy('activity.setStatus'),
@@ -35,21 +32,36 @@ fdescribe('Gatsby Plugin - Percy', () => {
       .and.resolveTo({ data: { allSitePage: { nodes: [] } } });
 
     store = {
-      getState: jasmine.createSpy('store.getState')
+      getState: jasmine.createSpy('store.getgState')
         .and.returnValue({ program: { directory: path.join(__dirname, '.tmp') } })
     };
 
-    await post('/test/api/reset');
+    await helpers.test('reset');
   });
 
-  xit('does nothing when the healthcheck fails', async () => {
-    await post('/test/api/disconnect', '/percy/healthcheck');
+  afterEach(done => rimraf(directory, () => done()));
+
+  it('does nothing when the healthcheck fails', async () => {
+    await helpers.test('disconnect', '/percy/healthcheck');
     await run();
 
     expect(reporter.activityTimer).toHaveBeenCalledWith('Percy');
     expect(activity.setStatus).toHaveBeenCalledWith('Disabled, skipping snapshots');
     expect(activity.end).toHaveBeenCalled();
     expect(graphql).not.toHaveBeenCalled();
+  });
+
+  it('errors when the graphql query errors', async () => {
+    let err = new Error('test');
+    graphql.and.resolveTo({ errors: [err] });
+    await run();
+
+    expect(graphql).toHaveBeenCalled();
+    expect(activity.setStatus).toHaveBeenCalledWith('Querying pages...');
+    expect(reporter.error).toHaveBeenCalledWith('Error taking snapshots:\n', (
+      jasmine.objectContaining(err)));
+    expect(activity.setStatus).not.toHaveBeenCalledWith('Taking snapshots...');
+    expect(activity.end).toHaveBeenCalled();
   });
 
   it('throws an error when a bad query is passed', async () => {
@@ -72,7 +84,7 @@ fdescribe('Gatsby Plugin - Percy', () => {
     expect(activity.end).toHaveBeenCalled();
     expect(graphql).toHaveBeenCalled();
 
-    let { logs } = await get('/test/logs');
+    let logs = await helpers.get('logs', i => i);
 
     expect(logs).toEqual(jasmine.arrayContaining([
       jasmine.objectContaining({ message: 'Snapshot found: /test-other/' })
@@ -98,7 +110,7 @@ fdescribe('Gatsby Plugin - Percy', () => {
     expect(activity.end).toHaveBeenCalled();
     expect(graphql).toHaveBeenCalled();
 
-    let { logs } = await get('/test/logs');
+    let logs = await helpers.get('logs', i => i);
 
     expect(logs).toEqual(jasmine.arrayContaining([
       jasmine.objectContaining({ message: 'Snapshot found: /test-a/' }),
