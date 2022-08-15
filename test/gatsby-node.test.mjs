@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
-import plugin from '../gatsby-node.js';
 import helpers from '@percy/sdk-utils/test/helpers';
+import plugin from '../gatsby-node.js';
 
 describe('Gatsby Plugin - Percy', () => {
   let activity, reporter, graphql, store;
-  let directory = path.join(import.meta.url, '../.tmp/public');
+  let directory = path.join(import.meta.url, '../.tmp');
 
   function run(options = {}) {
     return plugin.onPostBuild({ reporter, graphql, store }, options);
@@ -14,7 +14,7 @@ describe('Gatsby Plugin - Percy', () => {
 
   beforeEach(async () => {
     await helpers.setupTest();
-    fs.mkdirSync(directory, { recursive: true });
+    fs.mkdirSync(`${directory}/public`, { recursive: true });
 
     activity = {
       start: jasmine.createSpy('activity.start'),
@@ -33,13 +33,13 @@ describe('Gatsby Plugin - Percy', () => {
 
     store = {
       getState: jasmine.createSpy('store.getState')
-        .and.returnValue({ program: { directory: path.join(import.meta.url, '../.tmp') } })
+        .and.returnValue({ program: { directory } })
     };
 
     await helpers.test('reset');
   });
 
-  afterEach(done => rimraf(directory, () => done()));
+  afterEach(done => rimraf(`${directory}/public`, () => done()));
 
   it('does nothing when the healthcheck fails', async () => {
     await helpers.test('disconnect', '/percy/healthcheck');
