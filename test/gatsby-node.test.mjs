@@ -1,17 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const rimraf = require('rimraf');
-const plugin = require('../gatsby-node');
+import fs from 'fs';
+import path from 'path';
+import rimraf from 'rimraf';
+import plugin from '../gatsby-node.js';
+import helpers from '@percy/sdk-utils/test/helpers';
 
 describe('Gatsby Plugin - Percy', () => {
-  let activity, reporter, graphql, store, helpers;
-  let directory = path.join(__dirname, '.tmp/public');
+  let activity, reporter, graphql, store;
+  let directory = path.join(import.meta.url, '../.tmp/public');
 
   function run(options = {}) {
     return plugin.onPostBuild({ reporter, graphql, store }, options);
   }
 
-  beforeAll(async () => ({ default: helpers } = await import('@percy/sdk-utils/test/helpers')));
   beforeEach(async () => {
     await helpers.setupTest();
     fs.mkdirSync(directory, { recursive: true });
@@ -32,8 +32,8 @@ describe('Gatsby Plugin - Percy', () => {
       .and.resolveTo({ data: { allSitePage: { nodes: [] } } });
 
     store = {
-      getState: jasmine.createSpy('store.getgState')
-        .and.returnValue({ program: { directory: path.join(__dirname, '.tmp') } })
+      getState: jasmine.createSpy('store.getState')
+        .and.returnValue({ program: { directory: path.join(import.meta.url, '../.tmp') } })
     };
 
     await helpers.test('reset');
@@ -84,10 +84,8 @@ describe('Gatsby Plugin - Percy', () => {
     expect(activity.end).toHaveBeenCalled();
     expect(graphql).toHaveBeenCalled();
 
-    let logs = await helpers.get('logs', i => i);
-
-    expect(logs).toEqual(jasmine.arrayContaining([
-      jasmine.objectContaining({ message: 'Snapshot found: /test-other/' })
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: /test-other/'
     ]));
   });
 
@@ -112,10 +110,10 @@ describe('Gatsby Plugin - Percy', () => {
 
     let logs = await helpers.get('logs', i => i);
 
-    expect(logs).toEqual(jasmine.arrayContaining([
-      jasmine.objectContaining({ message: 'Snapshot found: /test-a/' }),
-      jasmine.objectContaining({ message: 'Snapshot found: /test-b/' }),
-      jasmine.objectContaining({ message: 'Snapshot found: /test-c/' })
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: /test-a/',
+      'Snapshot found: /test-b/',
+      'Snapshot found: /test-c/'
     ]));
   });
 });

@@ -2341,7 +2341,7 @@
     cross-spawn "^7.0.3"
     which "^2.0.2"
 
-"@percy/cli-snapshot@1.9.0", "@percy/cli-snapshot@^1.0.0":
+"@percy/cli-snapshot@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@percy/cli-snapshot/-/cli-snapshot-1.9.0.tgz#5b29f8a5388ddff910a884c04a4e91d331a20550"
   integrity sha512-ZmhRoncV/yl/58Djj1RGS6yYJtoV93YKSMo5JEmpHMCL6adrteeV46g1u3sqXl2DpREV7wuTpstLi+4cnxdu/g==
@@ -2372,14 +2372,6 @@
     "@percy/client" "1.9.0"
     "@percy/logger" "1.9.0"
 
-"@percy/client@1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/client/-/client-1.8.1.tgz#bbc81c2a41ab44e5f79c93aac6afa68c17a90af8"
-  integrity sha512-2T0SdIUFwMCsnaUTM0hNQx5lrkg2qPHPKBL/MRrbbTPJVJe3J9PzeR84RJtKviyy+ciEkkm6UaQsWBngbyXXsQ==
-  dependencies:
-    "@percy/env" "1.8.1"
-    "@percy/logger" "1.8.1"
-
 "@percy/client@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@percy/client/-/client-1.9.0.tgz#66cadb1e052034d05b3524c2928fda652820e0be"
@@ -2387,16 +2379,6 @@
   dependencies:
     "@percy/env" "1.9.0"
     "@percy/logger" "1.9.0"
-
-"@percy/config@1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/config/-/config-1.8.1.tgz#46d73b8cdb0e1d7400e8d91fe12e9f6ea08d2b31"
-  integrity sha512-yKdKx0kh5xyVxBdNVExXsoNuSmKcmpma31DkqqacDUu2nYSjuCGxr3j3y8BRAKURfj59fdhwpFNmjVVB1xiVWA==
-  dependencies:
-    "@percy/logger" "1.8.1"
-    ajv "^8.6.2"
-    cosmiconfig "^7.0.0"
-    yaml "^2.0.0"
 
 "@percy/config@1.9.0":
   version "1.9.0"
@@ -2427,49 +2409,15 @@
     rimraf "^3.0.2"
     ws "^8.0.0"
 
-"@percy/core@^1.0.0":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/core/-/core-1.8.1.tgz#b1e419da98251b370cdcea436bb702ee3461d203"
-  integrity sha512-wwTSJWoKK8tr8AbORlJGJ7uz55v8oUdOrfZtCnRPssWiceaWFXecRbjLXcNCCz0/2nT6Y1ilDsEOjlExYnKhww==
-  dependencies:
-    "@percy/client" "1.8.1"
-    "@percy/config" "1.8.1"
-    "@percy/dom" "1.8.1"
-    "@percy/logger" "1.8.1"
-    content-disposition "^0.5.4"
-    cross-spawn "^7.0.3"
-    extract-zip "^2.0.1"
-    fast-glob "^3.2.11"
-    micromatch "^4.0.4"
-    mime-types "^2.1.34"
-    path-to-regexp "^6.2.0"
-    rimraf "^3.0.2"
-    ws "^8.0.0"
-
-"@percy/dom@1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/dom/-/dom-1.8.1.tgz#b3daa0f6f8d95a5b72df4edfdca615ed04f14f93"
-  integrity sha512-h9XJV+VcVHrMkfIgJ6sJLujtYLzkvRy3aBvUY/iS7yh88qM16pSuTgEHG9fzbOp8ZNZpu6zZdxy4QmeACqzGzw==
-
 "@percy/dom@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@percy/dom/-/dom-1.9.0.tgz#4d52fb401111006ef49bd3b8cdc3fe9700ebcb55"
   integrity sha512-Js0JCow9d4g7wqTqGgzwIMKG8apV/6BUJ7vM57K1t2y+MLiPKDiu4VC+6WIxIDs2wAUIN6j5byQKNv/G337qzA==
 
-"@percy/env@1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/env/-/env-1.8.1.tgz#338d87479dc48fc2ca3e0a66c98f0b5235f322c2"
-  integrity sha512-noxlV3fesivvXxnWEODUzdoToIurOolvwlEk+ETmpB933zKTpo55UFD5leV5LWP5Oxwrv4uen2i7ZdHRXPD47Q==
-
 "@percy/env@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@percy/env/-/env-1.9.0.tgz#cd599c604a0e764b5c1114cfab839aed766d1dd4"
   integrity sha512-xkg0oSX7FHXA9T9aLUhvl9YsG1arYFdt8BNTcrDW//kOt/oJX/9hsBXlVxpfhUcK21S7TPvv3UEVVkOW/ZCMlg==
-
-"@percy/logger@1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.8.1.tgz#91e1fb3ec2952dfd170201ab101aa1a7f505c778"
-  integrity sha512-O1GpuuN6pzBk/dso57LS90APbRNfc4y0qsGEIph+8f1zK6dBZmalwKLzhgrvb267rLe3pduYM5fCiYel0pqh7Q==
 
 "@percy/logger@1.9.0":
   version "1.9.0"

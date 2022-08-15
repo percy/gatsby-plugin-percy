@@ -18,12 +18,10 @@
     "test:coverage": "nyc yarn test"
   },
   "dependencies": {
-    "@percy/cli-snapshot": "^1.0.0",
     "@percy/sdk-utils": "^1.0.0"
   },
   "devDependencies": {
     "@percy/cli": "^1.9.0",
-    "@percy/core": "^1.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
