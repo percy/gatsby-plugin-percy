@@ -1,6 +1,6 @@
 {
   "spec_dir": "test",
-  "spec_files": ["**/*.test.js"],
+  "spec_files": ["**/*.test.mjs"],
   "random": false,
   "helpers": [
     "../node_modules/@babel/register/lib/index.js",

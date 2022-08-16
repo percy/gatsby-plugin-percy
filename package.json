@@ -14,16 +14,14 @@
   ],
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
-    "pretest": "node --require @percy/core/post-install",
-    "test": "cross-env NODE_ENV=test jasmine --config=test/jasmine.json",
+    "test": "cross-env NODE_ENV=test percy exec --testing -- jasmine --config=test/jasmine.json",
     "test:coverage": "nyc yarn test"
   },
   "dependencies": {
-    "@percy/cli-snapshot": "^1.0.0-beta.69",
-    "@percy/sdk-utils": "^1.0.0-beta.69"
+    "@percy/sdk-utils": "^1.0.0"
   },
   "devDependencies": {
-    "@percy/core": "^1.0.0-beta.69",
+    "@percy/cli": "^1.9.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
