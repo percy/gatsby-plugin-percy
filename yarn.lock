@@ -1974,9 +1974,9 @@
   integrity sha512-JfuXPrDyD+nJXVzHDSf08UxRQH3/HPNWi2YPQk80k09jsj7aav4TFrlW1HO6LbG2vClETRUqQgAP3w5Z4nDzHQ==
 
 "@percy/sdk-utils@^1.0.0":
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.10.3.tgz#08481646caf65ed4fb8e1c4d7083d02174badc5d"
-  integrity sha512-OzvFHjlRy46+eFukjg94TH87PW+JmZJYh7zFsQX9rmajrJwloUz6Y2rTra5Uav1/GXDOipltW6+TxwMZRcMSvQ==
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.10.4.tgz#5cab2f29f75588372743713b634e0780abdc681e"
+  integrity sha512-5MTB30SSKLMMX3Mc19Ig62stZJeKbEyRZpVj8df47GQB4s5vbB3qtRwy0cmJBwcbDZxU5LWYQABsfr9UdAKvVg==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.7":
   version "0.5.7"
