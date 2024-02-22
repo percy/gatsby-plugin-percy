@@ -18,7 +18,7 @@
     "test:coverage": "nyc yarn test"
   },
   "dependencies": {
-    "@percy/sdk-utils": "^1.0.0"
+    "@percy/sdk-utils": "^1.27.7"
   },
   "devDependencies": {
     "@percy/cli": "^1.9.1",
