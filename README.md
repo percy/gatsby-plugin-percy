@@ -49,10 +49,10 @@ Options are not required. The following are accepted plugin options within your 
   `allSitePage.nodes` query structure, you will also need to set a custom `resolvePages` function.
 - `resolvePages` - A function given data retrieved by the query and returns an array of page paths.
 - `...` - Any additional [`static` snapshot
-  options](https://docs.percy.io/docs/cli-snapshot#static-options).
+  options](https://www.browserstack.com/docs/percy/take-percy-snapshots/snapshots-via-cli#static-options).
 
 Percy also searches the current working directory and up for a [matching Percy config
-file](https://docs.percy.io/docs/cli-configuration#files).
+file](https://www.browserstack.com/docs/percy/take-percy-snapshots/overview#files).
 
 ### Example
 
@@ -112,9 +112,9 @@ All previous plugin options were provided to the `snapshot` command as flags. Th
 been removed. If using any of the previous plugin options, replace them with the below alternatives:
 
 - `config` - Use the CLI `--config` flag instead (`percy exec --config ... -- gatsby build`)
-- `files` - Use the [`include` static option](https://docs.percy.io/docs/cli-snapshot#static-options)
+- `files` - Use the [`include` static option](www.browserstack.com/docs/percy/take-percy-snapshots/snapshots-via-cli#static-options)
   (can be provided as a plugin option)
-- `ignore` - Use the [`exclude` static option](https://docs.percy.io/docs/cli-snapshot#static-options)
+- `ignore` - Use the [`exclude` static option](www.browserstack.com/docs/percy/take-percy-snapshots/snapshots-via-cli#static-options)
   (can be provided as a plugin option)
 
 See [options](#options) above for all accepted options.
